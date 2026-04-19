@@ -1,0 +1,34 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # 手動でもスタートできるボタンを付けます
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: プログラムを受け取る
+      uses: actions/checkout@v4
+
+    - name: Javaの準備をする
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Gradle（大工さん）の準備をする
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: 8.2.2
+
+    - name: アプリを組み立てる
+      run: gradle assembleDebug
+
+    - name: 完成したアプリ（APK）をアップロードする
+      uses: actions/upload-artifact@v4
+      with:
+        name: RemainderCalc-App
+        path: app/build/outputs/apk/debug/app-debug.apk
