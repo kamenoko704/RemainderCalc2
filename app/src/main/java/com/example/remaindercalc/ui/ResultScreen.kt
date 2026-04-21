@@ -1,6 +1,8 @@
 package com.example.remaindercalc.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,17 +42,48 @@ fun ResultScreen(
                 fontWeight = FontWeight.Bold
             )
         } else {
-            // 今まで通り、商（答え）と余りを大きく2行で表示します
+            // 合計を表示します
             Text(
-                text = "シート：$quotient",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                text = "合計：$input",
+                fontSize = 14.sp,
+                color = Color.LightGray
             )
-            Text(
-                text = "バラ：$remainder",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Spacer(modifier = Modifier.height(4.dp)) // 少し隙間を開けます
+
+            // 14や21の数字と、商（答え）を表示します
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "$divisor",
+                    fontSize = 12.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .background(Color.DarkGray, shape = RoundedCornerShape(4.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+                Text(
+                    text = "シート：$quotient",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            // 14や21の数字と、余りを表示します
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "$divisor",
+                    fontSize = 12.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .background(Color.DarkGray, shape = RoundedCornerShape(4.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+                Text(
+                    text = "バラ：$remainder",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp)) // 少し隙間を開けます
