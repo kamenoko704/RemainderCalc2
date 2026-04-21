@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
                     is ScreenState.Input -> {
                         // 入力画面を表示します！
                         InputScreen(
-                            inputText = inputText,
                             onNumberClick = { number -> viewModel.onNumberClick(number) },
+                            onMultiplyClick = { viewModel.onMultiplyClick() },
                             onCalculate = { divisor -> viewModel.calculate(divisor) }
                         )
                     }

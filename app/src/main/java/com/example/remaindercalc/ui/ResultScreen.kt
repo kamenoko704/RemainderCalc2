@@ -27,19 +27,15 @@ fun ResultScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // 小さく「何を何で割ったか」を表示します
+        // 商（答え）と余りを大きく2行で表示します
         Text(
-            text = "$input ÷ $divisor",
-            fontSize = 16.sp,
-            color = Color.LightGray
+            text = "シート：$quotient",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
         )
-        
-        Spacer(modifier = Modifier.height(8.dp)) // 少し隙間を開けます
-
-        // 商（答え）と余りを大きく表示します
         Text(
-            text = "$quotient あまり $remainder",
-            fontSize = 20.sp, // はみ出さないように少しだけ調整しました
+            text = "バラ：$remainder",
+            fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 

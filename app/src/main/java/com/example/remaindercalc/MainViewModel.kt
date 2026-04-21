@@ -29,6 +29,10 @@ class MainViewModel : ViewModel() {
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
 
+    // 掛け算のための記憶用変数です
+    private var storedNumber: Int? = null // 1つ目の数字を覚えておく場所
+    private var isMultiplyMode: Boolean = false // 掛け算ボタンが押されたかどうかの目印
+
     // 数字ボタンが押されたときの処理です
     fun onNumberClick(number: Int) {
         // 長すぎる数字は計算できないので、9桁までに制限します
@@ -37,17 +41,34 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    // 「かける」ボタンが押されたときの処理です
+    fun onMultiplyClick() {
+        val currentInput = _inputText.value.toIntOrNull()
+        if (currentInput != null) {
+            storedNumber = currentInput // 今の数字を覚えておきます
+            isMultiplyMode = true // 掛け算モードにします
+            _inputText.value = "" // 2つ目の数字を入れるために画面を空っぽにします
+        }
+    }
+
     // 「14」または「21」のボタンが押されたときの計算処理です
     fun calculate(divisor: Int) {
         // 今の入力を数字に直します（もし空っぽなら何もしません）
         val currentInput = _inputText.value.toIntOrNull()
         if (currentInput != null) {
-            val quotient = currentInput / divisor // 商（答え）を計算
-            val remainder = currentInput % divisor // 余りを計算
+            // 掛け算モードなら（前の数字 × 今の数字）を計算、そうでなければ今の数字をそのまま使います
+            val targetNumber = if (isMultiplyMode && storedNumber != null) {
+                storedNumber!! * currentInput
+            } else {
+                currentInput
+            }
+
+            val quotient = targetNumber / divisor // 商（答え）を計算
+            val remainder = targetNumber % divisor // 余りを計算
             
             // 計算が終わったので、画面を「結果画面」に切り替えます
             _screenState.value = ScreenState.Result(
-                input = currentInput,
+                input = targetNumber,
                 divisor = divisor,
                 quotient = quotient,
                 remainder = remainder
@@ -58,6 +79,8 @@ class MainViewModel : ViewModel() {
     // 「C (クリア)」ボタンが押されたときの処理です
     fun clear() {
         _inputText.value = "" // 入力されている数字を空っぽに戻します
+        storedNumber = null   // 覚えていた数字も忘れます
+        isMultiplyMode = false // 掛け算モードもやめます
         _screenState.value = ScreenState.Input // 画面を「入力画面」に戻します
     }
 }

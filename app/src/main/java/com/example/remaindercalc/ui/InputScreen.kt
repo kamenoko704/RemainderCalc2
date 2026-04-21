@@ -15,8 +15,8 @@ import androidx.wear.compose.material.Text
 // このブロックは「数字を入力する画面」のデザインを作るところです
 @Composable
 fun InputScreen(
-    inputText: String,           // 今入力されている数字
     onNumberClick: (Int) -> Unit,// 数字ボタンを押したときのお願い
+    onMultiplyClick: () -> Unit, // かけるボタンを押したときのお願い
     onCalculate: (Int) -> Unit   // 14や21ボタンを押したときのお願い
 ) {
     // 画面全体を縦に並べる設定です
@@ -25,17 +25,19 @@ fun InputScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // 一番上に、今入力されている数字を表示します
-        Text(
-            text = if (inputText.isEmpty()) "0" else inputText, // 空なら0を表示
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        // 1行目: ×ボタン（一番上）
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Button(
+                onClick = onMultiplyClick,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF8C00)), // オレンジ色
+                modifier = Modifier.size(36.dp) // 丸いボタンに変更
+            ) {
+                Text("×", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp)) // 少し隙間を開けます
 
-        // ここから下はテンキー（数字ボタン）を並べます
-        
-        // 1 2 3 の行
+        // 2行目: 1, 2, 3
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             NumberButton(1, onNumberClick)
             NumberButton(2, onNumberClick)
@@ -43,15 +45,34 @@ fun InputScreen(
         }
         Spacer(modifier = Modifier.height(4.dp)) // 少し隙間を開けます
         
-        // 4 5 6 の行
+        // 3行目: 14, 4, 5, 6, 21 （ここが一番横幅が広くなります）
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            // 左端に14
+            Button(
+                onClick = { onCalculate(14) },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0055FF)), // 青色
+                modifier = Modifier.size(36.dp)
+            ) {
+                Text("14")
+            }
+            
+            // 中央に4, 5, 6
             NumberButton(4, onNumberClick)
             NumberButton(5, onNumberClick)
             NumberButton(6, onNumberClick)
+            
+            // 右端に21
+            Button(
+                onClick = { onCalculate(21) },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF00AA00)), // 緑色
+                modifier = Modifier.size(36.dp)
+            ) {
+                Text("21")
+            }
         }
         Spacer(modifier = Modifier.height(4.dp)) // 少し隙間を開けます
         
-        // 7 8 9 の行
+        // 4行目: 7, 8, 9
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             NumberButton(7, onNumberClick)
             NumberButton(8, onNumberClick)
@@ -59,28 +80,9 @@ fun InputScreen(
         }
         Spacer(modifier = Modifier.height(4.dp)) // 少し隙間を開けます
         
-        // 14 0 21 の行
+        // 5行目: 0 （一番下）
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            // 14の計算ボタン（青色）
-            Button(
-                onClick = { onCalculate(14) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0055FF)), // 少し明るい青
-                modifier = Modifier.size(36.dp)
-            ) {
-                Text("14")
-            }
-            
-            // 0ボタン
             NumberButton(0, onNumberClick)
-            
-            // 21の計算ボタン（緑色）
-            Button(
-                onClick = { onCalculate(21) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF00AA00)), // 少し明るい緑
-                modifier = Modifier.size(36.dp)
-            ) {
-                Text("21")
-            }
         }
     }
 }
