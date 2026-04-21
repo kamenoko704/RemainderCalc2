@@ -16,9 +16,9 @@ import androidx.wear.compose.material.Text
 @Composable
 fun ResultScreen(
     input: Int,      // 元の数字
-    divisor: Int,    // 割った数（14か21）
-    quotient: Int,   // 商（答え）
-    remainder: Int,  // 余り
+    divisor: Int?,   // 割った数（14か21）。nullの場合は掛け算の答えだけを表示します
+    quotient: Int?,  // 商（答え）
+    remainder: Int?, // 余り
     onClear: () -> Unit // Cボタンを押したときのお願い
 ) {
     // 画面全体を縦に並べる設定です
@@ -27,17 +27,31 @@ fun ResultScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // 商（答え）と余りを大きく2行で表示します
-        Text(
-            text = "シート：$quotient",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "バラ：$remainder",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
+        if (divisor == null) {
+            // 割り算をしない場合（×ボタン2回目のとき）は、掛け算の答えだけを表示します
+            Text(
+                text = "掛け算の答え",
+                fontSize = 14.sp,
+                color = Color.LightGray
+            )
+            Text(
+                text = "$input",
+                fontSize = 42.sp,
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            // 今まで通り、商（答え）と余りを大きく2行で表示します
+            Text(
+                text = "シート：$quotient",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "バラ：$remainder",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp)) // 少し隙間を開けます
 

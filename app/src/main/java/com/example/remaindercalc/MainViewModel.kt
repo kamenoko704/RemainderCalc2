@@ -13,9 +13,9 @@ sealed class ScreenState {
     // 2. 結果を見る画面（計算した元の数字、割る数、商、余りを覚えておきます）
     data class Result(
         val input: Int, 
-        val divisor: Int, 
-        val quotient: Int, 
-        val remainder: Int
+        val divisor: Int?, 
+        val quotient: Int?, 
+        val remainder: Int?
     ) : ScreenState() 
 }
 
@@ -43,11 +43,38 @@ class MainViewModel : ViewModel() {
 
     // 「かける」ボタンが押されたときの処理です
     fun onMultiplyClick() {
-        val currentInput = _inputText.value.toIntOrNull()
-        if (currentInput != null) {
-            storedNumber = currentInput // 今の数字を覚えておきます
-            isMultiplyMode = true // 掛け算モードにします
-            _inputText.value = "" // 2つ目の数字を入れるために画面を空っぽにします
+        // 現在の入力を文字として取得します
+        val currentInputString = _inputText.value
+        
+        // 何も入力されていなくて、掛け算モードでもない場合は何もしません
+        if (currentInputString.isEmpty() && !isMultiplyMode) return
+
+        if (isMultiplyMode && storedNumber != null) {
+            // 2回目の「×」が押されたとき：掛け算の答えを計算して、結果画面に出します（＝の役割）
+            // もし空っぽのまま「×」を押した場合は「1」を掛けたことにします（例：5 × × ＝ 5）
+            val currentInput = currentInputString.toIntOrNull() ?: 1
+            val result = storedNumber!! * currentInput
+            
+            // 掛け算の答えだけを結果画面に渡します（割り算はしないのでnullにします）
+            _screenState.value = ScreenState.Result(
+                input = result,
+                divisor = null,
+                quotient = null,
+                remainder = null
+            )
+            
+            // 次の計算のために状態をリセットします
+            isMultiplyMode = false
+            storedNumber = null
+            _inputText.value = ""
+        } else {
+            // 1回目の「×」が押されたとき：今の数字を覚えて掛け算モードにします
+            val currentInput = currentInputString.toIntOrNull()
+            if (currentInput != null) {
+                storedNumber = currentInput
+                isMultiplyMode = true
+                _inputText.value = "" // 2つ目の数字を入れるために画面を空っぽにします
+            }
         }
     }
 
